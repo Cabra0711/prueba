@@ -1,0 +1,242 @@
+@using System.Linq;
+@model PoliRiwi.Response.ServiceResponse<IEnumerable<Places>>
+
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-end mb-5">
+        <div>
+            <h1 class="display-4 fw-bold text-white mb-1" style="letter-spacing: -1px;">LOCATION MANAGEMENT</h1>
+            <p class="text-secondary mb-0">Monitor and configure physical nodes and facility access</p>
+        </div>
+        <div class="d-flex gap-3">
+            <div class="position-relative">
+                <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 text-secondary"></i>
+                <input type="text" class="form-control dark-input ps-5" placeholder="Search facility..." style="width: 300px; border-radius: 8px;">
+            </div>
+            <button class="btn btn-primary-custom px-4 py-2 fw-bold" data-bs-toggle="modal" data-bs-target="#addPlaceModal">
+                <i class="bi bi-plus-lg me-2"></i> NEW PLACE
+            </button>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-5">
+        <div class="col-md-3">
+            <div class="inventory-container p-3 border border-white border-opacity-10">
+                <div class="text-secondary font-label-sm mb-1" style="font-size: 11px;">ACTIVE ZONES</div>
+                <div class="h4 mb-0 fw-bold">@Model.Data.Count()</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="inventory-container p-1 border border-white border-opacity-10">
+        <table class="table table-dark table-hover align-middle mb-0">
+            <thead class="text-secondary border-bottom border-white border-opacity-10">
+                <tr>
+                    <th class="ps-4 py-3 font-label-sm" style="font-size: 12px;">NAME</th>
+                    <th class="py-3 font-label-sm" style="font-size: 12px;">SPACE TYPE</th>
+                    <th class="py-3 font-label-sm" style="font-size: 12px;">STATUS</th>
+                    <th class="py-3 font-label-sm" style="font-size: 12px;">CAPACITY</th>
+                    <th class="pe-4 py-3 text-end font-label-sm" style="font-size: 12px;">ACTIONS</th>
+                </tr>
+            </thead>
+            <tbody>
+             @foreach (var place in Model.Data)
+                {
+                    <tr>
+                    <td class="ps-4 py-4">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="rounded-3 d-flex align-items-center justify-content-center" style="width: 48px; height: 48px; background: rgba(108, 99, 255, 0.1); border: 1px solid rgba(108, 99, 255, 0.2);">
+                                <i class="bi bi-building text-primary-custom" style="font-size: 1.2rem; color: #8b5cf6;"></i>
+                            </div>
+                            <div>
+                                <div class="fw-bold text-white">@place.Name</div>
+                                <div class="text-secondary small"></div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="badge rounded-pill px-3 py-2" style="background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.2);">
+                            @place.SpaceType
+                        </span>
+                    </td>
+                    <td>
+                        @place.Status
+                    </td>
+                    <td class="text-secondary">@place.Capacity</td>
+                    <td class="pe-4 text-end">
+                        <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal-@place.Id"><i class="bi bi-trash"></i></button>
+                        <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editModal-@place.Id" ><i class="bi bi-pencil"></i></button>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#infoModal-@place.Id"><i class="bi bi-info-circle-fill"></i></button>
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="modal fade" id="addPlaceModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-end">
+        <div class="modal-content form-panel border-0 shadow-lg">
+            <div class="modal-header border-bottom border-white border-opacity-10 px-4 py-4">
+                <h5 class="modal-title fw-bold">REGISTER PLACE</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form method="post" asp-action="CreatePlace">
+                    <div class="mb-4">
+                        <label class="form-label text-secondary font-label-sm">NAME</label>
+                        <input name="Name" type="text" class="form-control dark-input py-2" placeholder="e.g. Research Lab">
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label text-secondary font-label-sm">SPACE TYPE</label>
+                        <select name="SpaceType" class="form-select dark-input py-2">
+                            <option value="0">Scoccer</option>
+                            <option value="1">Basketball</option>
+                            <option value="2">Pool</option>
+                            <option value="3">Voleyball</option>
+                            <option value="4">Rugby</option>
+                            <option value="5">Tenis</option>
+                            <option value="6">Golf</option>
+                        </select>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label text-secondary font-label-sm">CAPACITY</label>
+                        <input type="number" 
+                               class="form-control dark-input py-2" 
+                               id="Capacity" 
+                               name="Capacity" 
+                               min="1" 
+                               max="50" 
+                               required>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label text-secondary font-label-sm">STATUS</label>
+                        <select name="Status" class="form-select dark-input py-2">
+                            <option value="0">Unavailable</option>
+                            <option value="1">Available</option>
+                            <option value="2">Reserved</option>
+                            <option value="3">Cancelled</option>
+                            <option value="4">Finished</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary-custom w-100 py-3 mt-4 fw-bold">CONFIRM NODE ENTRY</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+@foreach (var place in Model.Data)
+{
+    <div class="modal fade" id="deleteModal-@place.Id" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-end modal-lg">
+            <div class="modal-content bg-dark border border-white border-opacity-10" style="background:#0f1424;">
+
+                <div class="modal-header border-secondary">
+                    <h5 class="modal-title fw-bold">Confirmar Eliminación</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body text-center p-4">
+                    <i class="bi bi-exclamation-triangle text-danger" style="font-size: 3rem;"></i>
+                    <p class="mt-3">
+                        ¿Estás seguro de eliminar al usuario <strong>@place.Name</strong>?
+                    </p>
+                </div>
+
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-dark" data-bs-dismiss="modal">
+                        CANCEL
+                    </button>
+
+                    <form asp-action="DeletePlace" asp-route-id="@place.Id" method="post">
+                        <button type="submit" class="btn btn-danger">
+                            DELETE USER
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+ 
+    <div class="modal fade" id="infoModal-@place.Id" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 glass-card bg-dark text-white">
+
+                <div class="modal-header border-secondary">
+                    <h5 class="modal-title fw-bold">SYSTEM DETAILS</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body p-4">
+
+                    <div class="d-flex align-items-center gap-3 mb-4">
+                        <div class="avatar-placeholder" style="width:60px; height:60px; font-size: 2rem;">
+                            <i class="bi bi-person-fill"></i>
+                        </div>
+
+                        <div>
+                            <h4 class="m-0 fw-bold">@place.Name</h4>
+                            <span class="text-muted">ID: @place.Id</span>
+                        </div>
+                    </div>
+
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item bg-transparent text-white border-secondary small">
+                            <strong>SPACE TYPE:</strong> @place.SpaceType
+                        </li>
+
+                        <li class="list-group-item bg-transparent text-white border-secondary small">
+                            <strong>REGISTERED:</strong> @place.CreatedAt
+                        </li>
+                        
+                        <li class="list-group-item bg-transparent text-white border-secondary small">
+                            <strong>LAST UPDATED:</strong> @place.UpdatedAt
+                        </li>
+
+                        <li class="list-group-item bg-transparent text-white border-secondary small">
+                            <strong>CAPACITY:</strong> @place.Capacity
+                        </li>
+                    </ul>
+
+                </div>
+            </div>
+        </div>
+    </div>
+     <div class="modal fade" id="editModal-@place.Id" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content border-0 glass-card bg-dark text-white">
+                                        <div class="modal-header border-secondary">
+                                            <h5 class="modal-title fw-bold">Editar Usuario</h5>
+                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                        </div>
+                                        <form asp-action="UpdatePlace" method="post">
+                                            <input type="hidden" name="Id" value="@place.Id" />
+                                            <div class="modal-body p-4">
+                                                <div class="mb-3">
+                                                    <label class="form-label small text-muted-custom fw-bold">NAME</label>
+                                                    <input name="Name" class="form-control bg-dark border-secondary text-white" value="@place.Name">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label small text-muted-custom fw-bold">SPACE TYPE</label>
+                                                    <input name="SpaceType" class="form-control bg-dark border-secondary text-white" value="@place.SpaceType">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label small text-muted-custom fw-bold">CAPACITY</label>
+                                                    <input name="Capacity" class="form-control bg-dark border-secondary text-white" value="@place.Capacity">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label small text-muted-custom fw-bold">STATUS</label>
+                                                    <input name="Status" class="form-control bg-dark border-secondary text-white" value="@place.Status">
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer border-0">
+                                                <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Cerrar</button>
+                                                <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+}

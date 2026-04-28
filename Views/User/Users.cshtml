@@ -1,0 +1,242 @@
+@using System.Linq;
+@model PoliRiwi.Response.ServiceResponse<IEnumerable<Users>>
+
+<div class="container px-4 py-5 position-fixed">
+
+    <!-- HEADER -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end gap-3 mb-5">
+        <div>
+            <h1 class="fw-bold display-5 mb-1" style="letter-spacing:-1px;">
+                IDENTITY MANAGEMENT
+            </h1>
+            <p class="text-secondary mb-0">
+                Configure node access and system permissions
+            </p>
+        </div>
+        
+
+        <div class="d-flex gap-3 align-items-center">
+            <div class="position-relative">
+                <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 text-secondary"></i>
+                <input type="text"
+                       class="form-control dark-input ps-5"
+                       style="width: 320px; height: 44px;"
+                       placeholder="Search operatives...">
+            </div>
+
+            <button class="btn btn-primary-custom px-4 py-2 text-white" data-bs-toggle="modal" data-bs-target="#userModal">
+                New Entry
+            </button>
+        </div>
+    </div>
+
+    <!-- TABLE -->
+    <div class="inventory-container shadow-lg overflow-hidden">
+        <div class="table-responsive">
+            <table class="table table-dark table-hover align-middle mb-0">
+                <thead class="text-secondary small border-bottom border-white border-opacity-10">
+                <tr>
+                    <th class="ps-4 py-3">NAME</th>
+                    <th>DOCUMENT</th>
+                    <th class="text-center">PHONE</th>
+                    <th>REGISTERED</th>
+                    <th class="text-end pe-4">ACTIONS</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                @foreach (var user in Model.Data)
+                {
+                    <tr>
+                        <td class="ps-4 py-4">
+                            <div class="d-flex align-items-center gap-3">
+                                <img src="https://sbcf.fr/wp-content/uploads/2018/03/sbcf-default-avatar.png"
+                                     class="rounded-3" width="45">
+                                <div>
+                                    <div class="fw-bold">@user.Name</div>
+                                    <div class="text-secondary small">@user.Email</div>
+                                </div>
+                            </div>
+                        </td>
+
+                        <td>
+                            <span class="badge rounded-pill border border-primary border-opacity-25 text-primary bg-primary bg-opacity-10 px-3 py-2">
+                                @user.Document
+                            </span>
+                        </td>
+
+                        <td>
+                            <span class="badge rounded-pill border border-primary border-opacity-25 text-primary bg-primary bg-opacity-10 px-3 py-2">
+                                @user.Phone
+                            </span>
+                        </td>
+
+                        <td class="text-secondary">@user.CreatedAt</td>
+
+                        <td class="text-end pe-4">
+                            <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal-@user.Id"><i class="bi bi-trash"></i></button>
+                            <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editModal-@user.Id" ><i class="bi bi-pencil"></i></button>
+                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#infoModal-@user.Id"><i class="bi bi-info-circle-fill"></i></button>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+@foreach (var user in Model.Data)
+{
+    <div class="modal fade" id="deleteModal-@user.Id" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-end modal-lg">
+            <div class="modal-content bg-dark border border-white border-opacity-10" style="background:#0f1424;">
+
+                <div class="modal-header border-secondary">
+                    <h5 class="modal-title fw-bold">Confirmar Eliminación</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body text-center p-4">
+                    <i class="bi bi-exclamation-triangle text-danger" style="font-size: 3rem;"></i>
+                    <p class="mt-3">
+                        ¿Estás seguro de eliminar al usuario <strong>@user.Name</strong>?
+                    </p>
+                </div>
+
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-dark" data-bs-dismiss="modal">
+                        CANCEL
+                    </button>
+
+                    <form asp-action="DeleteUser" asp-route-id="@user.Id" method="post">
+                        <button type="submit" class="btn btn-danger">
+                            DELETE USER
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+ 
+    <div class="modal fade" id="infoModal-@user.Id" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 glass-card bg-dark text-white">
+
+                <div class="modal-header border-secondary">
+                    <h5 class="modal-title fw-bold">SYSTEM DETAILS</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body p-4">
+
+                    <div class="d-flex align-items-center gap-3 mb-4">
+                        <div class="avatar-placeholder" style="width:60px; height:60px; font-size: 2rem;">
+                            <i class="bi bi-person-fill"></i>
+                        </div>
+
+                        <div>
+                            <h4 class="m-0 fw-bold">@user.Name</h4>
+                            <span class="text-muted">ID: @user.Id</span>
+                        </div>
+                    </div>
+
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item bg-transparent text-white border-secondary small">
+                            <strong>EMAIL:</strong> @user.Email
+                        </li>
+
+                        <li class="list-group-item bg-transparent text-white border-secondary small">
+                            <strong>REGISTERED:</strong> @user.CreatedAt
+                        </li>
+                        
+                        <li class="list-group-item bg-transparent text-white border-secondary small">
+                            <strong>LAST UPDATED:</strong> @user.UpdatedAt
+                        </li>
+
+                        <li class="list-group-item bg-transparent text-white border-secondary small">
+                            <strong>PHONE:</strong> @user.Phone
+                        </li>
+                    </ul>
+
+                </div>
+            </div>
+        </div>
+    </div>
+     <div class="modal fade" id="editModal-@user.Id" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content border-0 glass-card bg-dark text-white">
+                                        <div class="modal-header border-secondary">
+                                            <h5 class="modal-title fw-bold">Editar Usuario</h5>
+                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                        </div>
+                                        <form asp-action="UpdateUser" method="post">
+                                            <input type="hidden" name="Id" value="@user.Id" />
+                                            <div class="modal-body p-4">
+                                                <div class="mb-3">
+                                                    <label class="form-label small text-muted-custom fw-bold">NAME</label>
+                                                    <input name="Name" class="form-control bg-dark border-secondary text-white" value="@user.Name">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label small text-muted-custom fw-bold">EMAIl</label>
+                                                    <input name="Email" class="form-control bg-dark border-secondary text-white" value="@user.Email">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label small text-muted-custom fw-bold">DOCUMENT</label>
+                                                    <input name="Document" class="form-control bg-dark border-secondary text-white" value="@user.Document">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label small text-muted-custom fw-bold">PHONE</label>
+                                                    <input name="Phone" class="form-control bg-dark border-secondary text-white" value="@user.Phone">
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer border-0">
+                                                <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Cerrar</button>
+                                                <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+}
+<div class="modal fade" id="userModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-end modal-lg">
+        <div class="modal-content bg-dark border border-white border-opacity-10" style="background:#0f1424;">
+
+            
+            <div class="modal-header border-0 px-4 pt-4">
+                <h4 class="fw-bold text-white m-0">New Entry</h4>
+                <button type="button" class="btn-close btn-close-white opacity-50" data-bs-dismiss="modal"></button>
+            </div>
+
+           
+            <div class="modal-body px-4 pb-4">
+                <form method="post" asp-action="CreateUser">
+                    <div class="mb-4">
+                        <label class="text-secondary small mb-2">FULL NAME</label>
+                        <input name="Name" type="text" class="form-control dark-input" placeholder="Operative name...">
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="text-secondary small mb-2">EMAIL</label>
+                        <input name="Email" type="text" class="form-control dark-input">
+                    </div>
+                    <div class="mb-4">
+                        <label class="text-secondary small mb-2">DOCUMENT</label>
+                        <input name="Document" type="text" class="form-control dark-input">
+                    </div>
+                    <div class="mb-4">
+                        <label class="text-secondary small mb-2">Phone</label>
+                        <input name="Phone" type="text" class="form-control dark-input" >
+                    </div>
+
+                    <button type="submit" class="btn btn-primary-custom w-100 text-white py-3 fw-bold">
+                        CREATE
+                    </button>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>

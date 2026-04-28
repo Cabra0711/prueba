@@ -1,0 +1,128 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - PoliRiwi</title>
+    <script type="importmap"></script>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/PoliRiwi.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<style>
+    body {
+        background-color: #0d173d;
+        color: #fff !important;
+    }
+
+    .inventory-container {
+        background: rgba(255,255,255,0.03);
+        backdrop-filter: blur(10px);
+        border-radius: 16px;
+    }
+
+    .dark-input {
+        background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(255,255,255,0.08);
+        color: #fff;
+    }
+
+    .dark-input:focus {
+        background: rgba(255,255,255,0.07);
+        border-color: #6c63ff;
+        box-shadow: none;
+        color: #fff;
+    }
+
+    .form-panel {
+        width: 380px;
+        background: #0f1424;
+        z-index: 1050;
+    }
+
+    .btn-primary-custom {
+        background: linear-gradient(135deg, #6c63ff, #8b5cf6);
+        border: none;
+    }
+
+    .btn-primary-custom:hover {
+        opacity: 0.9;
+    }
+
+    .table-dark {
+        --bs-table-bg: transparent;
+    }
+
+    .badge {
+        letter-spacing: .5px;
+    }
+
+    .modal-dialog-end {
+        position: fixed;
+        top: 0;
+        right: 0;
+        margin: 0;
+        height: 100vh;
+        width: 420px; 
+        max-width: 100%;
+    }
+
+    .modal-dialog-end .modal-content {
+        height: 100vh;
+        border-radius: 0;
+        border-left: 1px solid rgba(255,255,255,0.08);
+    }
+    .modal-backdrop.show {
+        opacity: 0.6;
+    }
+    .modal.fade .modal-dialog {
+        transform: none !important;
+    }
+</style>
+<body>
+<aside class="d-flex flex-column position-fixed top-0 start-0 vh-100 border-end border-white border-opacity-10 py-4 z-3 text-light" 
+       style="width: 260px; background-color: #0b1437;">
+    
+    <div class="px-4 mb-5">
+        <h5 class="font-headline-lg text-white mb-0">PoliRIwi</h5>
+    </div>
+
+    <div class="px-4 mb-4">
+        <div class="text-uppercase fw-bold" style="color: var(--primary-container); font-size: 18px;">Inventory</div>
+        <div class="font-label-sm text-secondary" style="font-size: 10px;">MANAGEMENT CONSOLE</div>
+    </div>
+
+    <nav class="nav flex-column flex-grow-1">
+        <a class="nav-link d-flex align-items-center gap-3 px-4 py-3 text-secondary font-label-sm sidebar-link text-light" asp-controller="User" asp-action="Users">
+            <span class="material-symbols-outlined"><i class="bi bi-people-fill"></i></span> USERS
+        </a>
+        <a class="nav-link d-flex align-items-center gap-3 px-4 py-3 font-label-sm text-light" asp-controller="User" asp-action="Places">
+            <span class="material-symbols-outlined"><i class="bi bi-geo-alt-fill"></i></span> PLACES
+        </a>
+        <a class="nav-link d-flex align-items-center gap-3 px-4 py-3 text-secondary font-label-sm sidebar-link text-light" asp-controller="User" asp-action="Reservations">
+            <span class="material-symbols-outlined"><i class="bi bi-bookmark"></i></span> RESERVATIONS
+        </a>
+    </nav>
+
+    <div class="px-4 mt-auto pt-4 border-top border-white border-opacity-5">
+        <a class="nav-link d-flex align-items-center gap-3 py-2 text-secondary font-label-sm sidebar-link" href="#">
+            <span class="material-symbols-outlined"><i class="bi bi-info-circle"></i></span> SUPPORT
+        </a>
+        <a class="nav-link d-flex align-items-center gap-3 py-2 text-secondary font-label-sm sidebar-link" href="#">
+            <span class="material-symbols-outlined"><i class="bi bi-box-arrow-right"></i></span> LOGOUT
+        </a>
+    </div>
+</aside>
+    <div class="flex-grow-1">
+        <main class="min-vh-100 pt-5 px-5" style="margin-left: 260px; margin-right: 400px; background-color: #0d173d;">
+            @RenderBody()
+        </main>
+    </div>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

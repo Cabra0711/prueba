@@ -1,0 +1,46 @@
+body {
+    background-color: #0b0f19;
+    color: #fff;
+}
+
+.inventory-container {
+    background: rgba(255,255,255,0.03);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+}
+
+.dark-input {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    color: #fff;
+}
+
+.dark-input:focus {
+    background: rgba(255,255,255,0.07);
+    border-color: #6c63ff;
+    box-shadow: none;
+    color: #fff;
+}
+
+.form-panel {
+    width: 380px;
+    background: #0f1424;
+    z-index: 1050;
+}
+
+.btn-primary-custom {
+    background: linear-gradient(135deg, #6c63ff, #8b5cf6);
+    border: none;
+}
+
+.btn-primary-custom:hover {
+    opacity: 0.9;
+}
+
+.table-dark {
+    --bs-table-bg: transparent;
+}
+
+.badge {
+    letter-spacing: .5px;
+}
